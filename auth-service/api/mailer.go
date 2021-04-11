@@ -17,8 +17,8 @@ import (
 // Mailers, then you only need to make some struct with a SendEmail method and your code will
 // handle it automatically. Additionally, this allows us to *mock* the Mailer in our tests
 // so we don't send actual emails out to people while testing (sometimes an API can charge or
-// ban you if you make too many requests). This is part of a software engineering principle
-// called Dependency Injection.
+// ban you if you make too many requests). This is part of a software engineering technique
+// called a Dependency Injection.
 type Mailer interface {
 	// SendEmail sends an email to the recipient with the specified subject
 	SendEmail(recipient string, subject string, templatePath string, data map[string]interface{}) error

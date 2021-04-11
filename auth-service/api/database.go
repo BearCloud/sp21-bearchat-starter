@@ -19,7 +19,6 @@ func InitDB() *sql.DB {
 	log.Println("attempting connections")
 	// Open a SQL connection to the docker container hosting the database server
 	// Assign the connection to the "DB" variable
-	// Look at how it's done in the other microservices!
 	DB, err := sql.Open("mysql", "root:root@tcp(172.28.1.2:3306)/auth")
 
 	if err != nil {

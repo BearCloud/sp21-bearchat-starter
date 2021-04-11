@@ -19,7 +19,8 @@ const (
 )
 
 // RegisterRoutes initializes the api endpoints and maps the requests to specific functions. The API will
-// make use of the passed in Mailer and database connection.
+// make use of the passed in Mailer and database connection. What HTTP methods would be most appropriate
+// for each route?
 func RegisterRoutes(router *mux.Router, m Mailer, db *sql.DB) {
 	router.HandleFunc("/api/auth/signup", signup(m, db)).Methods(/*YOUR CODE HERE*/)
 	router.HandleFunc("/api/auth/signin", signin(db)).Methods(/*YOUR CODE HERE*/)
@@ -36,13 +37,13 @@ func signup(m Mailer, DB *sql.DB) http.HandlerFunc {
 
 		// Check if the username already exists
 		
-		// Check for error
+		// Check for any errors
 
 		// Check boolean returned from query
 
 		// Check if the email already exists
 		
-		// Check for error
+		// Check for any errors
 
 		// Check boolean returned from query
 
@@ -89,7 +90,10 @@ func signup(m Mailer, DB *sql.DB) http.HandlerFunc {
 			Name:    "access_token",
 			Value:   accessToken,
 			Expires: accessExpiresAt,
-			//Secure:   true,	// Since our website does not use HTTPS, this will make the cookie not send.
+			// Since our website does not use HTTPS, we have this commented out.
+			// However, in an actual service you would definitely want this so no
+			// cookies get stolen!
+			//Secure:   true,
 			HttpOnly: true,
 			SameSite: http.SameSiteNoneMode,
 			Path:     "/",
@@ -122,8 +126,8 @@ func signup(m Mailer, DB *sql.DB) http.HandlerFunc {
 			Path:    "/",
 		})
 
-		// Send verification email
-		err = m.SendEmail(creds.Email, "Email Verification", "user-signup.html", map[string]interface{}{"Token": verifyToken})
+		// Send verification email. Fill in the blank with the email of the user.
+		err = m.SendEmail(/*YOUR CODE HERE*/, "Email Verification", "user-signup.html", map[string]interface{}{"Token": verifyToken})
 		if err != nil {
 			http.Error(w, "error sending verification email", http.StatusInternalServerError)
 			log.Print(err.Error())
@@ -152,11 +156,11 @@ func signin(DB *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		// Generate an access token  and set it as a cookie (Look at signup and feel free to copy paste!)
+		// Generate an access token and set it as a cookie
 		accessExpiresAt := time.Now().Add(DefaultAccessJWTExpiry)
 		var accessToken string
 		accessToken, err = setClaims(AuthClaims{
-			UserID: /*YOUR CODE HERE*/,
+			UserID: "",
 			StandardClaims: jwt.StandardClaims{
 				Subject:   "access",
 				ExpiresAt: accessExpiresAt.Unix(),
@@ -177,7 +181,7 @@ func signin(DB *sql.DB) http.HandlerFunc {
 			Path:     "/",
 		})
 
-		// Generate a refresh token and set it as a cookie (Look at signup and feel free to copy paste!)
+		// Generate a refresh token and set it as a cookie
 		var refreshExpiresAt = time.Now().Add(DefaultRefreshJWTExpiry)
 		var refreshToken string
 		refreshToken, err = setClaims(AuthClaims{
@@ -207,7 +211,7 @@ func signin(DB *sql.DB) http.HandlerFunc {
 
 func logout(w http.ResponseWriter, r *http.Request) {
 	// Set the access_token and refresh_token to have an empty value and set their expiration date to anytime in the past
-	var expiresAt = /*YOUR CODE HERE*/)
+	var expiresAt = /*YOUR CODE HERE*/
 	http.SetCookie(w, &http.Cookie{Name: "access_token", Value: "", Expires: expiresAt})
 	http.SetCookie(w, &http.Cookie{Name: "refresh_token", Value: "", Expires: expiresAt})
 }
@@ -228,8 +232,8 @@ func verify(DB *sql.DB) http.HandlerFunc {
 		
 		// Make sure there were some rows affected
 		// Check: https://golang.org/pkg/database/sql/#Result
-		// This is to make sure that there was an email that was actually changed by our query
-		// if no files were affected return an error of type "StatusBadRequest"
+		// This is to make sure that there was an email that was actually changed by our query.
+		// If no rows were affected return an error of type "StatusBadRequest"
 
 	}
 }
@@ -250,7 +254,7 @@ func sendReset(m Mailer, DB *sql.DB) http.HandlerFunc {
 		// Check for errors executing the queries
 
 		// Send verification email
-		err = m.SendEmail(creds.Email, "BearChat Password Reset", "password-reset.html", map[string]interface{}{"Token": token})
+		err = m.SendEmail(/*YOUR CODE HERE*/, "BearChat Password Reset", "password-reset.html", map[string]interface{}{"Token": token})
 		if err != nil {
 			http.Error(w, "error sending verification email", http.StatusInternalServerError)
 			log.Print(err.Error())
@@ -285,12 +289,6 @@ func resetPassword(DB *sql.DB) http.HandlerFunc {
 		}
 
 		// Input new password and clear the reset token (set the token equal to empty string)
-		_, err = DB.Exec("UPDATE users SET hashedPassword=?, resetToken=? WHERE username=?", hashedPassword, "", username)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			log.Print(err.Error())
-		}
 
-		// Put the user in the redis cache to invalidate all current sessions (NOT IN SCOPE FOR PROJECT), leave this comment for future reference
 	}
 }
