@@ -38,7 +38,7 @@ Fill in the `Repository name` and `Description` with whatever you'd like and mak
 
 After this, you should be taken to a new GitHub repository with all the starter code already in it. Run `git clone https://github.com/<YOUR GITHUB USERNAME>/<YOUR REPOSITORY NAME>.git` on your computer to download the starter code.
 
-The last setup step will be to add this repository as a remote repository so you can pull in any updates we make to the skeleton. To do this, run `git remote add source https://github.com/RogueDynamite/sp21-project-starter` inside the directory with the starter code. You should be done with the setup after this!
+The last setup step will be to add this repository as a remote repository so you can pull in any updates we make to the skeleton. To do this, run `git remote add source https://github.com/BearCloud/sp21-bearchat-starter` inside the directory with the starter code. You should be done with the setup after this!
 
 ### More information
 
